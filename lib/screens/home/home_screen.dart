@@ -26,8 +26,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFF3f3f3f),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          Navigator.pushNamed(context, '/user_add');
+        onPressed: () async {
+          //await _cubit.contactsRepo.createContact('Akeno Himejima');
+          await Navigator.pushNamed(context, '/user_add');
+          _cubit.loadContacts();
         },
         child: const Icon(Icons.add),
         backgroundColor: const Color(0xFFdf6977),
@@ -54,20 +56,41 @@ class _HomeScreenState extends State<HomeScreen> {
                               horizontal: 15, vertical: 5),
                           child: ListTile(
                             tileColor: const Color(0xFF211f20),
-                            title: Text(state.contacts[index].name, style: const TextStyle(color: Colors.white),),
+                            leading: SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: CircleAvatar(
+                                radius: 40.0,
+                                backgroundImage: NetworkImage(
+                                  _cubit.contacts[index].avatar,
+                                ),
+                                onBackgroundImageError:  (exception,context) {
+                                  print('${_cubit.contacts[index].avatar} Cannot be loaded');
+                                },
+                                backgroundColor: Colors.white,
+                              ),
+                            ),
+                            title: Text(
+                              state.contacts[index].name,
+                              style: const TextStyle(color: Colors.white),
+                            ),
                           ),
                         ),
-                        onTap: (){
-                          Navigator.pushNamed(context, '/full_info', arguments: {
-                            'contact' : state.contacts[index]
-                          });
+                        onTap: () {
+                          Navigator.pushNamed(context, '/full_info',
+                              arguments: {'contact': state.contacts[index]});
                         },
                       ),
-                      onDismissed: (_){
+                      onDismissed: (_) {
                         _cubit.deleteContacts(state.contacts[index].id);
                       },
                     );
                   });
+            }
+            if (state is HomeErrorState) {
+              return const Center(
+                child: Text('ERROR!', style: TextStyle(color: Colors.white)),
+              );
             }
             return const Center(
               child: Text(

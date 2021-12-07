@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:phone_book_test/screens/full_info/full_info_screen.dart';
 import 'package:phone_book_test/screens/home/home_screen.dart';
@@ -12,6 +13,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return DI(
       child: MaterialApp(
+        builder: BotToastInit(),
+        navigatorObservers: [BotToastNavigatorObserver()],
         routes: {
           '/splash':(context) => const SplashScreen(),
           '/home': (context) => const HomeScreen(),
