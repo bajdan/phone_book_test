@@ -14,7 +14,7 @@ class FullInfoScreen extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
-              Text(contact.createdTime),
+              Text(contact.createdTime.toString()),
               Text(contact.name),
               Text(contact.id.toString()),
             ],

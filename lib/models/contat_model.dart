@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:phone_book_test/utils/json_reader.dart';
 
 class ContactModel {
-  final String createdTime;
+  final DateTime createdTime;
   final String name;
   final String avatar;
   final int id;
@@ -17,9 +17,9 @@ class ContactModel {
   factory ContactModel.fromMap(Map<String, dynamic> map) {
     JsonReader reader = JsonReader(map);
     return ContactModel(
-        createdTime: reader['createdAt'].asString(),
+        createdTime: reader['createdAt'].asDateTime(),
         name: reader['name'].asString(),
-        avatar: reader['name'].asString(),
+        avatar: reader['avatar'].asString(),
         id: reader['id'].asInt());
   }
 
@@ -27,7 +27,7 @@ class ContactModel {
       ContactModel.fromMap(json.decode(source));
 
   ContactModel copyWith(
-      {String? createdTime, String? name, String? avatar, int? id}) {
+      {DateTime? createdTime, String? name, String? avatar, int? id}) {
     return ContactModel(
         createdTime: createdTime ?? this.createdTime,
         name: name ?? this.name,
