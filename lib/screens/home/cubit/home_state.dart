@@ -12,4 +12,9 @@ class HomeLoadedState extends HomeState{
   HomeLoadedState({required this.contacts});
 }
 
+class HomeLoadedFromDBState extends HomeState{
+  final Stream<List<ContactModel>> contactStream;
+  HomeLoadedFromDBState({required this.contactStream});
+}
+
 class HomeErrorState extends HomeState{}
