@@ -6,7 +6,11 @@ class UserAddScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(),
+      body: SafeArea(
+        child: Center(
+          child: Text('User add screen'),
+        ),
+      ),
     );
   }
 }
