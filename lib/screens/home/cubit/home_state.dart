@@ -1,4 +1,4 @@
-import 'package:phone_book_test/models/contat_model.dart';
+import 'package:phone_book_test/models/contact_model.dart';
 
 abstract class HomeState{}
 

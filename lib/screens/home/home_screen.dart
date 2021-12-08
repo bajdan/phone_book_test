@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:phone_book_test/models/contat_model.dart';
+import 'package:phone_book_test/models/contact_model.dart';
 import 'package:phone_book_test/repositories/contacts_repository.dart';
 import 'package:phone_book_test/screens/home/cubit/home_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phone_book_test/screens/home/cubit/home_state.dart';
+import 'package:phone_book_test/screens/home/widgets/custom_db_card.dart';
+import 'package:phone_book_test/screens/home/widgets/custom_network_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -26,6 +28,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('ALL CONTACTS'),
+        centerTitle: true,
+        backgroundColor: const Color(0xFF211f20),
+      ),
       backgroundColor: const Color(0xFF3f3f3f),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -48,114 +55,47 @@ class _HomeScreenState extends State<HomeScreen> {
               return ListView.builder(
                   itemCount: state.contacts.length,
                   itemBuilder: (context, index) {
-                    return Dismissible(
-                      key: UniqueKey(),
-                      direction: DismissDirection.endToStart,
-                      child: GestureDetector(
-                        child: Card(
-                          color: Colors.transparent,
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 5),
-                          child: ListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                            tileColor: const Color(0xFF211f20),
-                            leading: SizedBox(
-                              width: 70,
-                              height: 70,
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: CircleAvatar(
-                                    radius: 25.0,
-                                    backgroundImage: NetworkImage(
-                                      _cubit.contacts[index].avatar,
-                                    ),
-                                    onBackgroundImageError:  (exception,context) {
-                                      print('${_cubit.contacts[index].avatar} Cannot be loaded');
-                                    },
-                                    backgroundColor: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            title: Text(
-                              state.contacts[index].name,
-                              style: const TextStyle(color: Colors.white),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                        onTap: () {
-                          Navigator.pushNamed(context, '/full_info',
-                              arguments: {'contact': state.contacts[index]});
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5.0, horizontal: 15.0),
+                      child: Dismissible(
+                        key: UniqueKey(),
+                        child: CustomNetworkCad(contact: state.contacts[index]),
+                        onDismissed: (_) {
+                          _cubit.deleteContacts(state.contacts[index].id);
+                          setState(() {});
                         },
                       ),
-                      onDismissed: (_) {
-                        _cubit.deleteContacts(state.contacts[index].id);
-                      },
                     );
                   });
             }
-            if(state is HomeLoadedFromDBState){
+            if (state is HomeLoadedFromDBState) {
               return StreamBuilder<List<ContactModel>>(
-                stream: state.contactStream,
-                  builder:
-                  (context, snapshot){
-                if(snapshot.hasData){
-                  if(snapshot.data!.isNotEmpty){
-                    return ListView.builder(
-                      itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index){
-                      return GestureDetector(
-                        child: Card(
-                          color: Colors.transparent,
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 5),
-                          child: ListTile(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                            tileColor: const Color(0xFF211f20),
-                            leading:  SizedBox(
-                              width: 70,
-                              height: 70,
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: CircleAvatar(
-                                  radius: 25.0,
-                                  child: Image.asset(
-                                      'assets/images/error_loading_image.png',
-                                    fit: BoxFit.contain,
-                                  ),
-                                  backgroundColor: Colors.black,
-                                ),
-                              ),
-                            ),
-                            title: Text(
-                              snapshot.data![index].name,
-                              style: const TextStyle(color: Colors.white),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                  stream: state.contactStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      if (snapshot.data!.isNotEmpty) {
+                        return ListView.builder(
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              return CustomDBCard(
+                                contact: snapshot.data![index],
+                              );
+                            });
+                      } else {
+                        return const Center(
+                          child: Text(
+                            'Wooops, its empty...',
+                            style: TextStyle(color: Colors.white),
                           ),
-                        ),
-                        onTap: () {
-                          Navigator.pushNamed(context, '/full_info',
-                              arguments: {'contact': snapshot.data![index]});
-                        },
+                        );
+                      }
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
                       );
-                    });
-                  }
-                  else{
-                    return const Center(child: Text('Ууупс, тут пусто...', style: TextStyle(color: Colors.white),),);
-                  }
-                }else{
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              });
+                    }
+                  });
             }
             if (state is HomeErrorState) {
               return const Center(

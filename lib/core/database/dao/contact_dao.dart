@@ -1,7 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:phone_book_test/core/database/app_database.dart';
 import 'package:phone_book_test/core/database/tables/contacts_table.dart';
-import 'package:phone_book_test/models/contat_model.dart';
+import 'package:phone_book_test/models/contact_model.dart';
 
 part '../mappers/contact_mapper.dart';
 
