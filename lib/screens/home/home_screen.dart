@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         key: UniqueKey(),
                         child: CustomNetworkCad(contact: state.contacts[index]),
                         onDismissed: (_) {
-                          _cubit.deleteContacts(state.contacts[index].id);
+                          _cubit.deleteContact(state.contacts[index].id);
                           setState(() {});
                         },
                       ),

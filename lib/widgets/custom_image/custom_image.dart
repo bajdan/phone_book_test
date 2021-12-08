@@ -19,7 +19,7 @@ class _CustomImageState extends State<CustomImage> {
 
   @override
   void initState() {
-    _cubit = CustomImageCubit()..downLoadImage(widget.url);
+    _cubit = CustomImageCubit()..tryDownLoadImage(widget.url);
     super.initState();
   }
   @override
