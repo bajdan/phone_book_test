@@ -18,8 +18,6 @@ abstract class IContactsRepo {
   Future<void> createContact(String name);
 
   Future<void> saveUserList(List<ContactModel> contacts);
-
-  Future<void> updateUserDb(List<ContactModel> contacts);
 }
 
 class ContactsRepo extends IContactsRepo {
@@ -50,25 +48,21 @@ class ContactsRepo extends IContactsRepo {
   }
 
   @override
-  Future<void> deleteContact(int id) async {
-    await apiManager.callApiRequest(DeleteRequest('users/$id'));
-    _contacts.removeWhere((contact) => contact.id == id);
-    updateUserDb(_contacts);
-  }
-
-  @override
   Future<void> createContact(String name) async {
     await apiManager
         .callApiRequest(PostRequest('users', payload: {'name': name}));
   }
 
   @override
-  Future<void> saveUserList(List<ContactModel> contacts) async {
-    await dbManager.saveUserList(contacts);
+  Future<void> deleteContact(int id) async {
+    await dbManager.deleteContactFromDB(id);
+    await apiManager.callApiRequest(DeleteRequest('users/$id'));
+    _contacts.removeWhere((contact) => contact.id == id);
+
   }
 
   @override
-  Future<void> updateUserDb(List<ContactModel> contacts) async {
-    await dbManager.updateUserDb(contacts);
+  Future<void> saveUserList(List<ContactModel> contacts) async {
+    await dbManager.saveUserList(contacts);
   }
 }

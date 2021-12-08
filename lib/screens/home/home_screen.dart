@@ -34,13 +34,21 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFF211f20),
       ),
       backgroundColor: const Color(0xFF3f3f3f),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.pushNamed(context, '/user_add');
-          _cubit.loadContactsFromNetwork();
+      floatingActionButton: BlocBuilder(
+        bloc: _cubit,
+        builder: (context, state){
+          if(state is HomeLoadedState){
+            return FloatingActionButton(
+              onPressed: () async {
+                await Navigator.pushNamed(context, '/user_add');
+                _cubit.loadContactsFromNetwork();
+              },
+              child: const Icon(Icons.add),
+              backgroundColor: const Color(0xFFdf6977),
+            );
+          }
+          return Container();
         },
-        child: const Icon(Icons.add),
-        backgroundColor: const Color(0xFFdf6977),
       ),
       body: SafeArea(
         child: BlocBuilder(
@@ -59,11 +67,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 5.0, horizontal: 15.0),
                       child: Dismissible(
-                        key: UniqueKey(),
+                        key: Key(state.contacts[index].id.toString()),
                         child: CustomNetworkCad(contact: state.contacts[index]),
                         onDismissed: (_) {
                           _cubit.deleteContact(state.contacts[index].id);
-                          setState(() {});
+                          setState(() {
+                            state.contacts.removeAt(index);
+                          });
                         },
                       ),
                     );
