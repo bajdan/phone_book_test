@@ -46,7 +46,7 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  Future<void> deleteContacts(int id) async {
+  Future<void> deleteContact(int id) async {
     await contactsRepo.deleteContact(id);
     contacts.removeWhere((contact) => contact.id == id);
     saveContactsToBD();

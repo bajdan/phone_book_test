@@ -1,3 +1,3 @@
 class RegexExpressions{
-  static final RegExp nameRegExp = RegExp('[a-zA-Z]');
+  static final RegExp nameRegExp = RegExp('[a-zA-Z\'-]');
 }

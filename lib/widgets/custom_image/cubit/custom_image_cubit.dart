@@ -6,7 +6,7 @@ import 'package:phone_book_test/widgets/custom_image/cubit/custom_image_state.da
 class CustomImageCubit extends Cubit<CustomImageState> {
   CustomImageCubit() : super(CustomImageLoadingState());
 
-  void downLoadImage(String url) async {
+  void tryDownLoadImage(String url) async {
     emit(CustomImageLoadingState());
 
     final ConnectivityResult connectivityResult =
