@@ -32,7 +32,11 @@ class HomeCubit extends Cubit<HomeState> {
         emit(HomeLoadedState(contacts: contacts));
         saveContactsToDB();
       } catch (e) {
-        emit(HomeErrorState());
+        try{
+          loadContactsFromDB();
+        }catch(e){
+          emit(HomeErrorState());
+        }
       }
     }
   }

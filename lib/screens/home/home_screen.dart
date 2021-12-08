@@ -36,8 +36,8 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: const Color(0xFF3f3f3f),
       floatingActionButton: BlocBuilder(
         bloc: _cubit,
-        builder: (context, state){
-          if(state is HomeLoadedState){
+        builder: (context, state) {
+          if (state is HomeLoadedState) {
             return FloatingActionButton(
               onPressed: () async {
                 await Navigator.pushNamed(context, '/user_add');
@@ -108,8 +108,28 @@ class _HomeScreenState extends State<HomeScreen> {
                   });
             }
             if (state is HomeErrorState) {
-              return const Center(
-                child: Text('ERROR!', style: TextStyle(color: Colors.white)),
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'ERROR!',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        _cubit.loadContactsFromNetwork();
+                      },
+                      icon: const Icon(
+                        Icons.cached,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               );
             }
             return const Center(
