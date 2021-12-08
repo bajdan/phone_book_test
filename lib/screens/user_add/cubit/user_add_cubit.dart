@@ -14,7 +14,7 @@ class UserAddCubit extends Cubit<UserAddState> {
     try {
       await contactsRepo.createContact(name);
     } catch (e) {
-      BotToast.showText(text: e.toString());
+      BotToast.showSimpleNotification(title: e.toString());
     }
 
     BotToast.cleanAll();

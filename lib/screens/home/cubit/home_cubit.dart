@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phone_book_test/models/contact_model.dart';
@@ -29,7 +30,7 @@ class HomeCubit extends Cubit<HomeState> {
         await contactsRepo.loadContactsFromEthernet();
         contacts = contactsRepo.getContacts();
         emit(HomeLoadedState(contacts: contacts));
-        saveContactsToBD();
+        saveContactsToDB();
       } catch (e) {
         emit(HomeErrorState());
       }
@@ -47,12 +48,16 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> deleteContact(int id) async {
-    await contactsRepo.deleteContact(id);
-    contacts.removeWhere((contact) => contact.id == id);
-    saveContactsToBD();
+    try{
+      await contactsRepo.deleteContact(id);
+      contacts.removeWhere((contact) => contact.id == id);
+    }catch(e){
+      BotToast.showSimpleNotification(title: e.toString());
+    }
   }
 
-  Future<void> saveContactsToBD() async {
+  Future<void> saveContactsToDB() async {
     await contactsRepo.saveUserList(contacts);
   }
 }
+

@@ -7,6 +7,8 @@ abstract class IDataBaseManager {
   Future<void> saveUserList(List<ContactModel> contacts);
 
   Future<void> updateUserDb(List<ContactModel> contacts);
+
+  void deleteContactFromDB(int id);
 }
 
 class DataBaseManager extends IDataBaseManager {
@@ -27,5 +29,10 @@ class DataBaseManager extends IDataBaseManager {
   @override
   Stream<List<ContactModel>> watchContacts() {
     return dataBase.contactDao.watchContacts();
+  }
+
+  @override
+  Future deleteContactFromDB(int id) {
+    return dataBase.contactDao.deleteContactFromDB(id);
   }
 }

@@ -35,4 +35,8 @@ class ContactDao extends DatabaseAccessor<MyDatabase> with _$ContactDaoMixin {
       );
     });
   }
+
+  Future deleteContactFromDB(int id) {
+    return (delete(contactsTable)..where((tbl) => tbl.id.equals(id))).go();
+  }
 }
