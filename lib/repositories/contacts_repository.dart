@@ -3,37 +3,44 @@ import 'package:phone_book_test/managers/db_manager.dart';
 import 'package:phone_book_test/managers/model/delete_request.dart';
 import 'package:phone_book_test/managers/model/get_request.dart';
 import 'package:phone_book_test/managers/model/post_request.dart';
-import 'package:phone_book_test/models/contat_model.dart';
+import 'package:phone_book_test/models/contact_model.dart';
 import 'package:phone_book_test/utils/json_reader.dart';
 
-abstract class IContactsRepo{
+abstract class IContactsRepo {
   List<ContactModel> getContacts();
+
   Future<void> loadContactsFromEthernet();
+
   Stream<List<ContactModel>> loadContactsFromDatabase();
+
   Future<void> deleteContact(int id);
+
   Future<void> createContact(String name);
+
   Future<void> saveUserList(List<ContactModel> contacts);
+
   Future<void> updateUserDb(List<ContactModel> contacts);
 }
 
-class ContactsRepo extends IContactsRepo{
+class ContactsRepo extends IContactsRepo {
   final ApiManager apiManager;
   final DataBaseManager dbManager;
-  List<ContactModel> _contacts =[];
+  List<ContactModel> _contacts = [];
 
   ContactsRepo({required this.apiManager, required this.dbManager});
 
   @override
-  Future<void> deleteContact(int id) async {
-    final result = await apiManager.callApiRequest(DeleteRequest('users/$id'));
+  List<ContactModel> getContacts() {
+    return _contacts;
   }
 
   @override
-  Future<void> loadContactsFromEthernet() async{
+  Future<void> loadContactsFromEthernet() async {
     final result = await apiManager.callApiRequest(GetRequest('users'));
     JsonReader reader = JsonReader(result);
 
-    final contactsList = reader.asListOfObjects().map((e) => ContactModel.fromMap(e)).toList();
+    final contactsList =
+        reader.asListOfObjects().map((e) => ContactModel.fromMap(e)).toList();
     _contacts = contactsList;
   }
 
@@ -43,24 +50,25 @@ class ContactsRepo extends IContactsRepo{
   }
 
   @override
-  Future<void> createContact(String name) async{
-    final result = await apiManager.callApiRequest(PostRequest('users',payload: {
-      'name' : name
-    }));
+  Future<void> deleteContact(int id) async {
+    await apiManager.callApiRequest(DeleteRequest('users/$id'));
+    _contacts.removeWhere((contact) => contact.id == id);
+    updateUserDb(_contacts);
   }
 
   @override
-  List<ContactModel> getContacts() {
-    return _contacts;
+  Future<void> createContact(String name) async {
+    await apiManager
+        .callApiRequest(PostRequest('users', payload: {'name': name}));
   }
 
   @override
-  Future<void> saveUserList(List<ContactModel> contacts) async{
+  Future<void> saveUserList(List<ContactModel> contacts) async {
     await dbManager.saveUserList(contacts);
   }
 
   @override
-  Future<void> updateUserDb(List<ContactModel> contacts) async{
+  Future<void> updateUserDb(List<ContactModel> contacts) async {
     await dbManager.updateUserDb(contacts);
   }
 }
