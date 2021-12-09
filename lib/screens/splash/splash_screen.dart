@@ -12,6 +12,7 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _logoOpacityController;
   late Animation<double> _opacityLogoAnimation;
 
+
   @override
   void initState() {
     _moveToHomeScreen();
@@ -23,6 +24,12 @@ class _SplashScreenState extends State<SplashScreen>
     _opacityLogoAnimation = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
         parent: _logoOpacityController, curve: Curves.bounceIn));
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _logoOpacityController.dispose();
+    super.dispose();
   }
 
   @override
