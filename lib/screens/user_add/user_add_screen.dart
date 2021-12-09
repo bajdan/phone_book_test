@@ -25,6 +25,13 @@ class _UserAddScreenState extends State<UserAddScreen> {
   }
 
   @override
+  void dispose() {
+    nameController.dispose();
+    surnameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFdf6977),
